@@ -9,5 +9,6 @@ public partial class MainWindowViewModel : ViewModelBase
     public MainWindowViewModel(Router router)
     {
         Router = router;
+        Router.NavigateTo<HomeViewModel>();
     }
 }

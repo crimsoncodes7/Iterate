@@ -23,6 +23,8 @@ public partial class App : Application
 
         services.AddSingleton<MainWindowViewModel>();
         services.AddSingleton<Router>();
+        services.AddTransient<HomeViewModel>();
+        services.AddTransient<SubjectsViewModel>();
         
         var provider = services.BuildServiceProvider();
         
