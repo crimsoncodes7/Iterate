@@ -1,6 +1,13 @@
-﻿namespace Iterate.ViewModels;
+﻿using Iterate.Services;
+
+namespace Iterate.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    public string Greeting { get; } = "Welcome to Avalonia!";
+    public Router Router { get; }
+
+    public MainWindowViewModel(Router router)
+    {
+        Router = router;
+    }
 }

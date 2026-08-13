@@ -1,13 +1,14 @@
+using System;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core;
-using Avalonia.Data.Core.Plugins;
-using System.Linq;
 using Avalonia.Markup.Xaml;
+using Iterate.Services;
 using Iterate.ViewModels;
 using Iterate.Views;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Iterate;
+
 
 public partial class App : Application
 {
@@ -15,14 +16,21 @@ public partial class App : Application
     {
         AvaloniaXamlLoader.Load(this);
     }
-
+    
     public override void OnFrameworkInitializationCompleted()
     {
+        var services = new ServiceCollection();
+
+        services.AddSingleton<MainWindowViewModel>();
+        services.AddSingleton<Router>();
+        
+        var provider = services.BuildServiceProvider();
+        
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainWindowViewModel(),
+                DataContext = provider.GetRequiredService<MainWindowViewModel>()
             };
         }
 
