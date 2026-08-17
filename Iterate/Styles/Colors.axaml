@@ -1,0 +1,35 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <!-- Background layers -->
+    <SolidColorBrush x:Key="PageBrush"        Color="#050607" />
+    <SolidColorBrush x:Key="HeaderBrush"      Color="#080A0D" />
+    <SolidColorBrush x:Key="SurfaceBrush"     Color="#0D1117" />
+    <SolidColorBrush x:Key="RaisedBrush"      Color="#141A23" />
+    <SolidColorBrush x:Key="FieldBrush"       Color="#121923" />
+    <SolidColorBrush x:Key="BorderBrush"      Color="#252E3A" />
+
+    <!-- Text -->
+    <SolidColorBrush x:Key="TextBrush"        Color="#EEF3F8" />
+    <SolidColorBrush x:Key="TextSoftBrush"    Color="#B7C1CE" />
+    <SolidColorBrush x:Key="MutedBrush"       Color="#778493" />
+
+    <!-- Blue interaction system -->
+    <SolidColorBrush x:Key="AccentBrush"      Color="#087BBE" />
+    <SolidColorBrush x:Key="AccentHoverBrush" Color="#1596DE" />
+    <SolidColorBrush x:Key="AccentWashBrush"  Color="#0B2A40" />
+    <SolidColorBrush x:Key="AccentSoftBrush"  Color="#104461" />
+
+
+    <!-- Semantic states -->
+    <SolidColorBrush x:Key="SuccessBrush"     Color="#42C98A" />
+    <SolidColorBrush x:Key="WarningBrush"     Color="#E7AE3D" />
+    <SolidColorBrush x:Key="DangerBrush"      Color="#EA6571" />
+
+    <LinearGradientBrush x:Key="PrimaryButtonBrush"
+                         StartPoint="0,0"
+                         EndPoint="1,1">
+        <GradientStop Offset="0" Color="#1596DE" />
+        <GradientStop Offset="1" Color="#066AA8" />
+    </LinearGradientBrush>
+</ResourceDictionary>

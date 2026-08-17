@@ -8,13 +8,236 @@
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="Iterate">
+  
+    <Window.Resources>
+    <!-- Rail item theme -->
+  <ControlTheme x:Key="RailItemButton"
+                 TargetType="Button">
+    <Setter Property="Height" Value="50" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    <Setter Property="VerticalContentAlignment" Value="Stretch" />
 
-    <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainWindowViewModel/>
-    </Design.DataContext>
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Grid>
 
-    <TransitioningContentControl Content="{Binding Router.CurrentViewModel}" />
+          <!-- Highlight for active Page -->
+          <Border Name="ActiveMarker"
+                  Width="3"
+                  HorizontalAlignment="Left"
+                  Background="{DynamicResource AccentBrush}"
+                  CornerRadius="0,3,3,0"
+                  Opacity="0" />
 
+          <Border Name="ItemSurface"
+                  Margin="6,0,0,0"
+                  Padding="12,10"
+                  Background="Transparent"
+                  CornerRadius="10">
+
+            <Grid ColumnDefinitions="30,12,*">
+
+              <Border Name="IconSurface"
+                      Width="30"
+                      Height="30"
+                      Background="Transparent"
+                      CornerRadius="9">
+                <TextBlock Name="IconGlyph"
+                           Text="{TemplateBinding Tag}"
+                           FontSize="16"
+                           FontFamily="{StaticResource LucideIcons}"
+                           Foreground="{DynamicResource MutedBrush}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center" />
+              </Border>
+              
+              <ContentPresenter Grid.Column="2"
+                                Name="LabelPresenter"
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                Foreground="{TemplateBinding Foreground}"
+                                VerticalContentAlignment="Center"
+                                IsVisible="False"/>
+            </Grid>
+          </Border>
+        </Grid>
+      </ControlTemplate>
+    </Setter>
+  </ControlTheme>
+  </Window.Resources>
+    
+  <Window.Styles>
+  <!-- Header -->
+  <Style Selector="Border.topbar">
+    <Setter Property="Height" Value="58" />
+    <Setter Property="Background" Value="#B8080A0D" />
+    <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+    <Setter Property="BorderThickness" Value="0,0,0,1" />
+    <Setter Property="Padding" Value="20,0" />
+  </Style>
+
+  <Style Selector="Button.header-icon">
+    <Setter Property="Width" Value="32" />
+    <Setter Property="Height" Value="32" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource TextSoftBrush}" />
+    <Setter Property="FontSize" Value="16" />
+  </Style>
+
+  <Style Selector="TextBox.header-search">
+    <Setter Property="Width" Value="480" />
+    <Setter Property="Height" Value="34" />
+    <Setter Property="Background" Value="{DynamicResource FieldBrush}" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
+    <Setter Property="Padding" Value="14,6" />
+  </Style>
+
+  <!-- Rail container -->
+  <Style Selector="Border.rail">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+    <Setter Property="BorderThickness" Value="0,0,1,0" />
+    <Setter Property="Padding" Value="12,18,12,14" />
+  </Style>
+
+  <!-- Rail item states -->
+  <Style Selector="Button.rail-item:pointerover /template/ Border#ItemSurface">
+    <Setter Property="Background" Value="{DynamicResource AccentWashBrush}" />
+  </Style>
+
+  <Style Selector="Button.rail-item.selected /template/ Border#ActiveMarker">
+    <Setter Property="Opacity" Value="1" />
+  </Style>
+
+  <Style Selector="Button.rail-item.selected /template/ Border#IconSurface">
+    <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+  </Style>
+
+  <Style Selector="Button.rail-item.selected /template/ TextBlock#IconGlyph">
+    <Setter Property="Foreground" Value="{DynamicResource SurfaceBrush}" />
+  </Style>
+  
+  <Style Selector="Border.rail.expanded Button.rail-item /template/ ContentPresenter#LabelPresenter">
+    <Setter Property="IsVisible" Value="True" />
+  </Style>
+
+</Window.Styles>
+    
+    <Grid RowDefinitions="58,*">
+    <!-- Header -->
+    <Border Grid.Row="0" Classes="topbar">
+      <Grid ColumnDefinitions="*,480,*" VerticalAlignment="Center">
+        
+        <StackPanel Grid.Column="0"
+                    Orientation="Horizontal"
+                    Spacing="14"
+                    VerticalAlignment="Center">
+          
+          <!-- Toggle Sidebar -->
+          <Button Classes="header-icon"
+                  Content="&#57642;"
+                  FontFamily="{StaticResource LucideIcons}"
+                  Command="{Binding ToggleSidebarCommand}"
+                  Padding="7"
+                  ToolTip.Tip="Collapse sidebar" />
+          
+          <!-- Brand -->
+          <Button Background="Transparent"
+                  Command="{Binding NavigateToHomeCommand}">
+            <Image Source="/Assets/Iterate-removebg-preview.png"
+                   Width="150" Height="140"
+                   HorizontalAlignment="Center"
+                   Margin="-30"/>
+          </Button>
+        </StackPanel>
+
+        <!-- Search -->
+        <TextBox Grid.Column="1"
+                 Classes="header-search"
+                 PlaceholderText="Search coming soon…" />
+      </Grid>
+    </Border>
+
+    <!-- Body: Sidebar + page -->
+    <Grid Grid.Row="1" ColumnDefinitions="Auto,*">
+
+      <!-- Sidebar -->
+      <Border Grid.Column="0" 
+              Classes="rail"
+              Classes.expanded="{Binding IsSidebarExpanded}"
+              Width="{Binding SidebarWidth}"
+              ClipToBounds="True">
+        <Grid RowDefinitions="Auto,*,Auto">
+
+          <!-- Navigation -->
+          <StackPanel Grid.Row="0" Spacing="4">
+
+            <Button Theme="{StaticResource RailItemButton}"
+                    Classes="rail-item"
+                    Classes.selected="{Binding IsHomeSelected}"
+                    Tag="&#57589;"
+                    Content="Home"
+                    Command="{Binding NavigateToHomeCommand}"/>
+
+            <Button Theme="{StaticResource RailItemButton}"
+                    Classes="rail-item"
+                    Classes.selected="{Binding IsSubjectsSelected}"
+                    Tag="&#58699;"
+                    Content="Subjects"
+                    Command="{Binding NavigateToSubjectsCommand}"/>
+
+            <Button Theme="{StaticResource RailItemButton}"
+                    Classes="rail-item"
+                    Classes.selected="{Binding IsReviewSelected}"
+                    Tag="&#58892;"
+                    Content="Review"
+                    Command="{Binding NavigateToReviewCommand}"/>
+
+            <Button Theme="{StaticResource RailItemButton}"
+                    Classes="rail-item"
+                    Classes.selected="{Binding IsProductivitySelected}"
+                    Tag="&#58041;"
+                    Content="Productivity"
+                    Command="{Binding NavigateToProductivityCommand}"/>
+
+            <Button Theme="{StaticResource RailItemButton}"
+                    Classes="rail-item"
+                    Classes.selected="{Binding IsAssistantSelected}"
+                    Tag="&#57787;"
+                    Content="Assistant"
+                    Command="{Binding NavigateToAssistantCommand}"/>
+
+            <Button Theme="{StaticResource RailItemButton}"
+                    Classes="rail-item"
+                    Classes.selected="{Binding IsHelpSelected}"
+                    Tag="&#57474;"
+                    Content="Help"
+                    Command="{Binding NavigateToHelpCommand}"/>
+            
+          </StackPanel>
+        </Grid>
+      </Border>
+      <Border Grid.Column="1"
+              Background="{DynamicResource PageBrush}"
+              Padding="32">
+
+        <TransitioningContentControl Content="{Binding Router.CurrentViewModel}"
+                                     HorizontalContentAlignment="Stretch"
+                                     VerticalContentAlignment="Stretch">
+
+          <TransitioningContentControl.PageTransition>
+            <CrossFade Duration="0:00:00.180" />
+          </TransitioningContentControl.PageTransition>
+
+        </TransitioningContentControl>
+      </Border>
+    </Grid>
+  </Grid>
 </Window>

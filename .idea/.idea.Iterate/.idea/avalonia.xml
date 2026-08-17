@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="Iterate/App.axaml" value="Iterate/Iterate.csproj" />
+        <entry key="Iterate/Styles/Colors.axaml" value="Iterate/Iterate.csproj" />
+        <entry key="Iterate/Styles/Controls.axaml" value="Iterate/Iterate.csproj" />
+        <entry key="Iterate/Styles/Typography.axaml" value="Iterate/Iterate.csproj" />
+        <entry key="Iterate/Views/AssistantView.axaml" value="Iterate/Iterate.csproj" />
+        <entry key="Iterate/Views/HelpView.axaml" value="Iterate/Iterate.csproj" />
+        <entry key="Iterate/Views/HomeView.axaml" value="Iterate/Iterate.csproj" />
+        <entry key="Iterate/Views/MainWindow.axaml" value="Iterate/Iterate.csproj" />
+        <entry key="Iterate/Views/ProductivityView.axaml" value="Iterate/Iterate.csproj" />
+        <entry key="Iterate/Views/ReviewView.axaml" value="Iterate/Iterate.csproj" />
+        <entry key="Iterate/Views/SubjectsView.axaml" value="Iterate/Iterate.csproj" />
+      </map>
+    </option>
+  </component>
+</project>
