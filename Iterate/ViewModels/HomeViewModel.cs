@@ -13,5 +13,8 @@ public partial class HomeViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void GoToSubjects() => _router.NavigateTo<SubjectsViewModel>();
+    private void GoToSubjects()
+    {
+        _router.NavigateTo<SubjectsViewModel>();
+    }
 }
