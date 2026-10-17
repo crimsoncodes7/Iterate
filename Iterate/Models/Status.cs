@@ -4,6 +4,5 @@ public enum Status
 {
     NotStarted, 
     Started, 
-    Paused,
     Completed
 }

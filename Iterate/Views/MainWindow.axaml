@@ -11,8 +11,7 @@
   
     <Window.Resources>
     <!-- Rail item theme -->
-  <ControlTheme x:Key="RailItemButton"
-                 TargetType="Button">
+  <ControlTheme x:Key="RailItemButton" TargetType="Button">
     <Setter Property="Height" Value="50" />
     <Setter Property="Background" Value="Transparent" />
     <Setter Property="BorderBrush" Value="Transparent" />
@@ -140,14 +139,6 @@
                     Spacing="14"
                     VerticalAlignment="Center">
           
-          <!-- Toggle Sidebar -->
-          <Button Classes="header-icon"
-                  Content="&#57642;"
-                  FontFamily="{StaticResource LucideIcons}"
-                  Command="{Binding ToggleSidebarCommand}"
-                  Padding="7"
-                  ToolTip.Tip="Collapse sidebar" />
-          
           <!-- Brand -->
           <Button Background="Transparent"
                   Command="{Binding NavigateToHomeCommand}">
@@ -156,12 +147,20 @@
                    HorizontalAlignment="Center"
                    Margin="-30"/>
           </Button>
+          
+          <!-- Toggle Sidebar -->
+          <Button Classes="header-icon"
+                  Content="&#57642;"
+                  FontFamily="{StaticResource LucideIcons}"
+                  Command="{Binding ToggleSidebarCommand}"
+                  Padding="7"
+                  ToolTip.Tip="Collapse sidebar" />
         </StackPanel>
 
         <!-- Search -->
         <TextBox Grid.Column="1"
                  Classes="header-search"
-                 PlaceholderText="Search coming soon…" />
+                 PlaceholderText="" />
       </Grid>
     </Border>
 
@@ -226,7 +225,7 @@
       </Border>
       <Border Grid.Column="1"
               Background="{DynamicResource PageBrush}"
-              Padding="32">
+              Padding="0">
 
         <TransitioningContentControl Content="{Binding Router.CurrentViewModel}"
                                      HorizontalContentAlignment="Stretch"

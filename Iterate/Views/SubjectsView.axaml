@@ -5,10 +5,790 @@
              xmlns:vm="using:Iterate.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Iterate.Views.SubjectsView"
-             x:DataType="vm:SubjectsViewModel">
+             x:DataType="vm:SubjectsViewModel"
+             x:Name="RootView">
     
-    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10">
-        <TextBlock Text="Subjects Screen"/>
-        <Button Content="Go to Home" Command="{Binding GoToHomeCommand}"/>
-    </StackPanel>
+  <Control.Resources>
+    <!-- Rail item theme -->
+    <ControlTheme x:Key="RailItemButton" TargetType="Button">
+      <Setter Property="Height" Value="50" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderBrush" Value="Transparent" />
+      <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+      <Setter Property="VerticalContentAlignment" Value="Stretch" />
+
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Grid>
+            <!-- Highlight for active Page -->
+            <Border Name="ActiveMarker"
+                    Width="3"
+                    HorizontalAlignment="Left"
+                    Background="{DynamicResource AccentBrush}"
+                    CornerRadius="0,3,3,0"
+                    Opacity="0" />
+
+            <Border Name="ItemSurface"
+                    Margin="6,0,0,0"
+                    Padding="12,10"
+                    Background="Transparent"
+                    CornerRadius="10">
+
+              <Grid ColumnDefinitions="30,12,*">
+                <Border Name="IconSurface"
+                        Width="30"
+                        Height="30"
+                        Background="Transparent"
+                        CornerRadius="9">
+                  <TextBlock Name="IconGlyph"
+                             Text="{TemplateBinding Tag}"
+                             FontSize="16"
+                             FontFamily="{StaticResource LucideIcons}"
+                             Foreground="{DynamicResource MutedBrush}"
+                             HorizontalAlignment="Center"
+                             VerticalAlignment="Center" />
+                </Border>
+                  
+                <ContentPresenter Grid.Column="2"
+                                  Name="LabelPresenter"
+                                  Content="{TemplateBinding Content}"
+                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  Foreground="{TemplateBinding Foreground}"
+                                  VerticalContentAlignment="Center"
+                                  IsVisible="False"/>
+              </Grid>
+            </Border>
+          </Grid>
+        </ControlTemplate>
+      </Setter>
+    </ControlTheme>
+  </Control.Resources>
+    
+  <Control.Styles>
+    <!-- Header -->
+    <Style Selector="Border.topbar">
+      <Setter Property="Height" Value="58" />
+      <Setter Property="Background" Value="#B8080A0D" />
+      <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+      <Setter Property="BorderThickness" Value="0,0,0,1" />
+      <Setter Property="Padding" Value="20,0" />
+    </Style>
+
+    <Style Selector="Button.header-icon">
+      <Setter Property="Width" Value="32" />
+      <Setter Property="Height" Value="32" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource TextSoftBrush}" />
+      <Setter Property="FontSize" Value="16" />
+    </Style>
+
+    <Style Selector="TextBox.header-search">
+      <Setter Property="Width" Value="480" />
+      <Setter Property="Height" Value="34" />
+      <Setter Property="Background" Value="{DynamicResource FieldBrush}" />
+      <Setter Property="BorderBrush" Value="Transparent" />
+      <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
+      <Setter Property="Padding" Value="14,6" />
+    </Style>
+
+    <!-- Rail container -->
+    <Style Selector="Border.rail">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+      <Setter Property="BorderThickness" Value="0,0,1,0" />
+      <Setter Property="Padding" Value="12,18,12,14" />
+    </Style>
+
+    <!-- Rail item states -->
+    <Style Selector="Button.rail-item:pointerover /template/ Border#ItemSurface">
+      <Setter Property="Background" Value="{DynamicResource AccentWashBrush}" />
+    </Style>
+
+    <Style Selector="Button.rail-item.selected /template/ Border#ActiveMarker">
+      <Setter Property="Opacity" Value="1" />
+    </Style>
+
+    <Style Selector="Button.rail-item.selected /template/ Border#IconSurface">
+      <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+    </Style>
+
+    <Style Selector="Button.rail-item.selected /template/ TextBlock#IconGlyph">
+      <Setter Property="Foreground" Value="{DynamicResource SurfaceBrush}" />
+    </Style>
+      
+    <Style Selector="Border.rail.expanded Button.rail-item /template/ ContentPresenter#LabelPresenter">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+
+    <Style Selector="ListBox.subject-tabs ListBoxItem">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderBrush" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0,0,0,2" />
+      <Setter Property="Padding" Value="10,6" />
+      <Setter Property="Margin" Value="0,0,8,0" />
+      <Setter Property="CornerRadius" Value="0" />
+      <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}" />
+      <Setter Property="Cursor" Value="Hand" />
+    </Style>
+
+    <!-- Hover State -->
+    <Style Selector="ListBox.subject-tabs ListBoxItem:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderBrush" Value="Transparent" />
+      <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+    </Style>
+
+    <!-- Selected State: Accent Underline -->
+    <Style Selector="ListBox.subject-tabs ListBoxItem:selected /template/ ContentPresenter">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderBrush" Value="#38BDF8" />
+      <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style Selector="ListBox.subject-tabs ListBoxItem:selected:pointerover /template/ ContentPresenter,
+                     ListBox.subject-tabs ListBoxItem:selected:focus /template/ ContentPresenter">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderBrush" Value="#38BDF8" />
+      <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+    </Style>
+      
+    <Style Selector="TreeViewItem" x:DataType="vm:TopicTreeNode">
+      <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+      <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+      <Setter Property="Padding" Value="6,4" />
+      <Setter Property="CornerRadius" Value="6" />
+    </Style>
+
+    <!-- Checklist Item CheckBox Styling -->
+    <Style Selector="CheckBox.spec-check">
+      <Setter Property="Padding" Value="12,0,0,0" />
+      <Setter Property="FontSize" Value="14" />
+      <Setter Property="Cursor" Value="Hand" />
+    </Style>
+
+    <!-- Base Confidence Pill Button -->
+    <Style Selector="Button.pill">
+      <Setter Property="Padding" Value="16,8" />
+      <Setter Property="CornerRadius" Value="20" />
+      <Setter Property="FontWeight" Value="Medium" />
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="Background" Value="Transparent" />
+    </Style>
+
+    <!-- Pill Variations -->
+    <Style Selector="Button.pill-red">
+      <Setter Property="BorderBrush" Value="#7F1D1D" />
+      <Setter Property="Foreground" Value="#F87171" />
+    </Style>
+    <Style Selector="Button.pill-red.active">
+      <Setter Property="Background" Value="#7F1D1D" />
+      <Setter Property="Foreground" Value="#FFFFFF" />
+    </Style>
+
+    <Style Selector="Button.pill-yellow">
+      <Setter Property="BorderBrush" Value="#78350F" />
+      <Setter Property="Foreground" Value="#FBBF24" />
+    </Style>
+    <Style Selector="Button.pill-yellow.active">
+      <Setter Property="Background" Value="#78350F" />
+      <Setter Property="Foreground" Value="#FFFFFF" />
+    </Style>
+
+    <Style Selector="Button.pill-green">
+      <Setter Property="BorderBrush" Value="#064E3B" />
+      <Setter Property="Foreground" Value="#34D399" />
+    </Style>
+    <Style Selector="Button.pill-green.active">
+      <Setter Property="Background" Value="#064E3B" />
+      <Setter Property="Foreground" Value="#FFFFFF" />
+    </Style>
+  </Control.Styles>
+    
+  <Grid ColumnDefinitions="Auto,*">
+
+    <!-- Left: Topic Hierarchy Rail -->
+    <Border Grid.Column="0" 
+            Classes="rail"
+            Classes.expanded="{Binding IsSidebarExpanded}"
+            Width="{Binding SidebarWidth}"
+            BorderBrush="{DynamicResource BorderBrush}"
+            BorderThickness="0,0,1,0"
+            ClipToBounds="True">
+      <Grid RowDefinitions="58,*,Auto">
+        
+        <!-- Rail Title / Status Bar -->
+        <Border Grid.Row="0" 
+                Padding="14,0" 
+                VerticalAlignment="Center">
+          <TextBlock Text="{Binding SelectedSubject.Name}" 
+                     FontWeight="SemiBold" 
+                     FontSize="15" 
+                     IsVisible="{Binding IsSidebarExpanded}" />
+        </Border>
+
+        <!-- Topic Tree -->
+        <ScrollViewer Grid.Row="1" 
+                      HorizontalScrollBarVisibility="Disabled"
+                      Padding="4,0,8,0">
+          <TreeView ItemsSource="{Binding TopicTree}"
+                    SelectedItem="{Binding SelectedTopicNode, Mode=TwoWay}"
+                    Background="Transparent">
+            <TreeView.ItemTemplate>
+              <TreeDataTemplate DataType="vm:TopicTreeNode" ItemsSource="{Binding Children}">
+                <!-- Transparent Border ensures full-row hit testing for context menus -->
+                <Border Background="Transparent">
+                  <Border.ContextMenu>
+                    <ContextMenu>
+                      <MenuItem Header="Rename / Edit Spec…" 
+                                Command="{Binding #RootView.((vm:SubjectsViewModel)DataContext).OpenEditTopicDialogCommand}" 
+                                CommandParameter="{Binding}" />
+                      <MenuItem Header="Delete Topic…" 
+                                Foreground="#F87171"
+                                Command="{Binding #RootView.((vm:SubjectsViewModel)DataContext).RequestDeleteTopicCommand}" 
+                                CommandParameter="{Binding}" />
+                    </ContextMenu>
+                  </Border.ContextMenu>
+
+                  <Grid ColumnDefinitions="*,Auto,Auto" Margin="0,1">
+                    <TextBlock Grid.Column="0" 
+                               Text="{Binding TopicName}" 
+                               TextTrimming="CharacterEllipsis"
+                               VerticalAlignment="Center" />
+
+                    <!-- Spec Reference Pill -->
+                    <Border Grid.Column="1"
+                            Margin="6,0,0,0"
+                            Padding="5,1"
+                            CornerRadius="4"
+                            Background="#0F172A"
+                            BorderBrush="#334155"
+                            BorderThickness="1"
+                            VerticalAlignment="Center"
+                            IsVisible="{Binding SpecReference, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                      <TextBlock Text="{Binding SpecReference}"
+                                 FontSize="10"
+                                 FontWeight="Medium"
+                                 Foreground="#38BDF8" />
+                    </Border>
+
+                    <!-- Completion badge: displays for parent modules with sub-topics -->
+                    <Border Grid.Column="2"
+                            Margin="6,0,0,0"
+                            Padding="6,2"
+                            CornerRadius="10"
+                            Background="#1E293B"
+                            VerticalAlignment="Center"
+                            IsVisible="{Binding Children.Count}">
+                      <TextBlock FontSize="11" Foreground="#94A3B8">
+                        <TextBlock.Text>
+                          <MultiBinding StringFormat="{}{0}/{1}">
+                            <Binding Path="CompletedCount" />
+                            <Binding Path="TotalCount" />
+                          </MultiBinding>
+                        </TextBlock.Text>
+                      </TextBlock>
+                    </Border>
+                  </Grid>
+                </Border>
+              </TreeDataTemplate>
+            </TreeView.ItemTemplate>
+          </TreeView>
+        </ScrollViewer>
+
+        <!-- Row 2: Docked Add Topic Section -->
+        <Border Grid.Row="2"
+                BorderBrush="{DynamicResource BorderBrush}"
+                BorderThickness="0,1,0,0"
+                Padding="12"
+                VerticalAlignment="Bottom"
+                IsVisible="{Binding IsSidebarExpanded}">
+          <StackPanel Spacing="4">
+            
+            <!-- Target indicator: shows parent name or 'Root' -->
+            <TextBlock FontSize="11" 
+                       Foreground="{DynamicResource TextMutedBrush}"
+                       TextTrimming="CharacterEllipsis">
+              <TextBlock.Text>
+                <MultiBinding StringFormat="Parent: {0}">
+                  <Binding Path="SelectedTopicNode.TopicName" FallbackValue="Root" TargetNullValue="Root" />
+                </MultiBinding>
+              </TextBlock.Text>
+            </TextBlock>
+
+            <Grid ColumnDefinitions="*,Auto">
+              <TextBox Grid.Column="0"
+                       Height="32"
+                       Padding="8,5"
+                       FontSize="13"
+                       VerticalContentAlignment="Center"
+                       PlaceholderText="New topic…"
+                       Text="{Binding NewTopicName, Mode=TwoWay}">
+                <TextBox.KeyBindings>
+                  <KeyBinding Gesture="Enter" Command="{Binding AddTopicCommand}" />
+                </TextBox.KeyBindings>
+              </TextBox>
+
+              <Button Grid.Column="1"
+                      Classes="header-icon"
+                      Command="{Binding AddTopicCommand}"
+                      Content="+"
+                      Width="32"
+                      Height="32"
+                      Padding="5"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      Margin="6,0,0,0"
+                      ToolTip.Tip="Add topic" />
+            </Grid>
+
+            <!-- Validation Error Message -->
+            <TextBlock Text="{Binding AddTopicErrorMessage}"
+                       Foreground="#F87171"
+                       FontSize="11"
+                       Margin="2,2,0,0"
+                       IsVisible="{Binding AddTopicErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+          </StackPanel>
+        </Border>
+
+      </Grid>
+    </Border>
+
+    <!-- Right: Header & Workspace -->
+    <Grid Grid.Column="1" RowDefinitions="58,*">
+
+      <!-- Header: Subject Tabs -->
+      <Border Grid.Row="0" 
+              Classes="topbar" 
+              BorderBrush="{DynamicResource BorderBrush}"
+              BorderThickness="0,0,0,1"
+              Padding="16,0">
+        <Grid ColumnDefinitions="Auto,*,Auto">
+          
+          <Button Grid.Column="0"
+                  Classes="header-icon"
+                  Content="&#57642;"
+                  FontFamily="{StaticResource LucideIcons}"
+                  Command="{Binding ToggleSidebarCommand}"
+                  Padding="7"
+                  ToolTip.Tip="Toggle specification rail"
+                  Margin="0,0,16,0" />
+
+          <ScrollViewer Grid.Column="1"
+                        HorizontalScrollBarVisibility="Hidden"
+                        VerticalScrollBarVisibility="Disabled"
+                        VerticalAlignment="Center">
+            <ListBox ItemsSource="{Binding Subjects}"
+                     SelectedItem="{Binding SelectedSubject, Mode=TwoWay}"
+                     Classes="subject-tabs"
+                     Background="Transparent"
+                     BorderThickness="0">
+              <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <StackPanel Orientation="Horizontal" Spacing="6" />
+                </ItemsPanelTemplate>
+              </ListBox.ItemsPanel>
+              <ListBox.ItemTemplate>
+                <DataTemplate>
+                  <Border Background="Transparent">
+                    <Border.ContextMenu>
+                      <ContextMenu>
+                        <MenuItem Header="Rename Subject…"
+                                  Command="{Binding #RootView.((vm:SubjectsViewModel)DataContext).OpenEditSubjectDialogCommand}"
+                                  CommandParameter="{Binding}" />
+                        <MenuItem Header="Delete Subject…"
+                                  Foreground="#F87171"
+                                  Command="{Binding #RootView.((vm:SubjectsViewModel)DataContext).RequestDeleteSubjectCommand}"
+                                  CommandParameter="{Binding}" />
+                      </ContextMenu>
+                    </Border.ContextMenu>
+
+                    <TextBlock Text="{Binding Name}"
+                               FontSize="13"
+                               FontWeight="Medium"
+                               VerticalAlignment="Center" />
+                  </Border>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+          </ScrollViewer>
+
+          <!-- Column 2: Inline Add Subject with Validation -->
+          <StackPanel Grid.Column="2"
+                      VerticalAlignment="Center"
+                      HorizontalAlignment="Right"
+                      Margin="16,0,0,0">
+
+            <StackPanel Orientation="Horizontal" Spacing="6">
+              <TextBox Width="150"
+                       Height="32"
+                       Padding="8,5"
+                       FontSize="13"
+                       MaxLength="20"
+                       VerticalContentAlignment="Center"
+                       PlaceholderText="New subject…"
+                       Text="{Binding NewSubjectName, Mode=TwoWay}">
+                <TextBox.KeyBindings>
+                  <KeyBinding Gesture="Enter" Command="{Binding AddSubjectCommand}" />
+                </TextBox.KeyBindings>
+              </TextBox>
+
+              <Button Classes="header-icon"
+                      Command="{Binding AddSubjectCommand}"
+                      Content="+"
+                      Width="32"
+                      Height="32"
+                      Padding="6"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      ToolTip.Tip="Add subject" />
+            </StackPanel>
+
+            <!-- Error Message Label -->
+            <TextBlock Text="{Binding AddSubjectErrorMessage}"
+                       Foreground="#F87171"
+                       FontSize="11"
+                       Margin="2,3,0,0"
+                       IsVisible="{Binding AddSubjectErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+          </StackPanel>
+
+        </Grid>
+      </Border>
+
+      <!-- Content Workspace -->
+      <Panel Grid.Row="1">
+
+        <!-- Empty State (Shown when no subtopic is selected) -->
+        <StackPanel VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Spacing="8"
+                    IsVisible="{Binding SelectedTopicViewModel, Converter={x:Static ObjectConverters.IsNull}}">
+          <TextBlock Text="No subtopic selected"
+                     FontSize="16"
+                     FontWeight="SemiBold"
+                     HorizontalAlignment="Center"
+                     Foreground="{DynamicResource TextPrimaryBrush}" />
+          <TextBlock Text="Select a subtopic from the sidebar."
+                     FontSize="13"
+                     Foreground="{DynamicResource TextMutedBrush}"
+                     HorizontalAlignment="Center" />
+        </StackPanel>
+
+        <!-- Topic Inspector (Rendered when SelectedTopicViewModel is active) -->
+        <ScrollViewer DataContext="{Binding SelectedTopicViewModel}"
+                      IsVisible="{Binding $parent[UserControl].((vm:SubjectsViewModel)DataContext).SelectedTopicViewModel, Converter={x:Static ObjectConverters.IsNotNull}}"
+                      Padding="40,32">
+          
+          <StackPanel MaxWidth="720" HorizontalAlignment="Left" Spacing="32">
+
+            <!-- Title & Status Header -->
+            <StackPanel Spacing="10"
+                        Orientation="Horizontal"
+                        VerticalAlignment="Center">
+              
+              <TextBlock Text="{Binding TopicTitle}"
+                         FontSize="26"
+                         FontWeight="Bold"
+                         TextWrapping="Wrap" /> 
+              
+              <Border Padding="2,4"
+                      CornerRadius="6"
+                      Background="#1E293B">
+                <TextBlock Text="{Binding Status}" 
+                           FontSize="12" 
+                           FontWeight="Medium"
+                           Foreground="#94A3B8" />
+              </Border>
+            </StackPanel>
+
+            <!-- Confidence Status Pills -->
+            <StackPanel Spacing="12">
+              <TextBlock Text="Confidence Level" 
+                         FontSize="14" 
+                         FontWeight="SemiBold" 
+                         Foreground="{DynamicResource TextMutedBrush}" />
+              
+              <StackPanel Orientation="Horizontal" Spacing="12">
+                <Button Classes="pill pill-red"
+                        Classes.active="{Binding Struggling}"
+                        Content="Struggling"
+                        Command="{Binding SelectConfidenceStatusCommand}"
+                        CommandParameter="Struggling" />
+
+                <Button Classes="pill pill-yellow"
+                        Classes.active="{Binding Developing}"
+                        Content="Developing"
+                        Command="{Binding SelectConfidenceStatusCommand}"
+                        CommandParameter="Developing" />
+
+                <Button Classes="pill pill-green"
+                        Classes.active="{Binding Mastered}"
+                        Content="Mastered"
+                        Command="{Binding SelectConfidenceStatusCommand}"
+                        CommandParameter="Mastered" />
+              </StackPanel>
+            </StackPanel>
+
+            <!-- Revision Checklist -->
+            <StackPanel Spacing="18">
+              <TextBlock Text="Study Checklist" 
+                         FontSize="14" 
+                         FontWeight="SemiBold" 
+                         Foreground="{DynamicResource TextMutedBrush}" />
+
+              <CheckBox Classes="spec-check"
+                        Content="Covered in class"
+                        IsChecked="{Binding CoveredInClass, Mode=TwoWay}" />
+
+              <CheckBox Classes="spec-check"
+                        Content="Studied it"
+                        IsChecked="{Binding StudiedIt, Mode=TwoWay}" />
+
+              <CheckBox Classes="spec-check"
+                        Content="Completed exam questions"
+                        IsChecked="{Binding DoneExamQs, Mode=TwoWay}" />
+
+              <CheckBox Classes="spec-check"
+                        Content="Fully understood it"
+                        IsChecked="{Binding FullyUnderstood, Mode=TwoWay}" />
+            </StackPanel>
+
+          </StackPanel>
+        </ScrollViewer>
+
+      </Panel>
+
+    </Grid>
+
+    <!-- Modal Edit Subject Dialog Overlay -->
+    <Grid Grid.Column="0" 
+          Grid.ColumnSpan="2"
+          Background="#99000000"
+          IsVisible="{Binding IsEditSubjectDialogOpen}"
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch">
+      <Border Background="#0F172A"
+              BorderBrush="#334155"
+              BorderThickness="1"
+              CornerRadius="10"
+              Padding="20"
+              Width="340"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              BoxShadow="0 10 25 0 #80000000">
+        <StackPanel Spacing="14">
+          <TextBlock Text="Rename Subject" 
+                     FontWeight="SemiBold" 
+                     FontSize="15" 
+                     Foreground="{DynamicResource TextPrimaryBrush}" />
+
+          <StackPanel Spacing="5">
+            <TextBlock Text="Subject Name" 
+                       FontSize="11" 
+                       Foreground="{DynamicResource TextMutedBrush}" />
+            <TextBox Height="34"
+                     Padding="8,6"
+                     FontSize="13"
+                     MaxLength="20"
+                     Text="{Binding EditSubjectName, Mode=TwoWay}">
+              <TextBox.KeyBindings>
+                <KeyBinding Gesture="Enter" Command="{Binding SaveEditSubjectCommand}" />
+              </TextBox.KeyBindings>
+            </TextBox>
+          </StackPanel>
+          
+          <StackPanel Spacing="5">
+            <TextBlock Text="Exam Board (optional, max 15 chars)" 
+                       FontSize="11" 
+                       Foreground="{DynamicResource TextMutedBrush}" />
+            <TextBox Height="34"
+                     Padding="8,6"
+                     FontSize="13"
+                     MaxLength="15"
+                     PlaceholderText="e.g. AQA, Edexcel, OCR"
+                     Text="{Binding EditSubjectExamBoard, Mode=TwoWay}">
+              <TextBox.KeyBindings>
+                <KeyBinding Gesture="Enter" Command="{Binding SaveEditSubjectCommand}" />
+              </TextBox.KeyBindings>
+            </TextBox>
+          </StackPanel>
+
+          <TextBlock Text="{Binding EditSubjectErrorMessage}"
+                     Foreground="#F87171"
+                     FontSize="11"
+                     TextWrapping="Wrap"
+                     IsVisible="{Binding EditSubjectErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+
+          <Grid ColumnDefinitions="*,*" Margin="0,6,0,0">
+            <Button Grid.Column="0"
+                    Content="Cancel"
+                    Command="{Binding CancelEditSubjectCommand}"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Height="32"
+                    Padding="12,4"
+                    Margin="0,0,4,0" />
+            <Button Grid.Column="1"
+                    Content="Save"
+                    Command="{Binding SaveEditSubjectCommand}"
+                    Background="#38BDF8"
+                    Foreground="#0F172A"
+                    FontWeight="SemiBold"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Height="32"
+                    Padding="12,4"
+                    Margin="4,0,0,0" />
+          </Grid>
+        </StackPanel>
+      </Border>
+    </Grid>
+    
+    <!-- Modal Edit Dialog Overlay (Spans entire screen) -->
+    <Grid Grid.Column="0" 
+          Grid.ColumnSpan="2"
+          Background="#99000000"
+          IsVisible="{Binding IsEditTopicDialogOpen}"
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch">
+      <Border Background="#0F172A"
+              BorderBrush="#334155"
+              BorderThickness="1"
+              CornerRadius="10"
+              Padding="20"
+              Width="340"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              BoxShadow="0 10 25 0 #80000000">
+        <StackPanel Spacing="14">
+          <TextBlock Text="Edit Topic" 
+                     FontWeight="SemiBold" 
+                     FontSize="15" 
+                     Foreground="{DynamicResource TextPrimaryBrush}" />
+
+          <StackPanel Spacing="5">
+            <TextBlock Text="Topic Name" 
+                       FontSize="11" 
+                       Foreground="{DynamicResource TextMutedBrush}" />
+            <TextBox Height="34"
+                     Padding="8,6"
+                     FontSize="13"
+                     Text="{Binding EditTopicName, Mode=TwoWay}">
+              <TextBox.KeyBindings>
+                <KeyBinding Gesture="Enter" Command="{Binding SaveEditTopicCommand}" />
+              </TextBox.KeyBindings>
+            </TextBox>
+          </StackPanel>
+
+          <StackPanel Spacing="5">
+            <TextBlock Text="Spec Reference (optional, max 10 chars)" 
+                       FontSize="11" 
+                       Foreground="{DynamicResource TextMutedBrush}" />
+            <TextBox Height="34"
+                     Padding="8,6"
+                     FontSize="13"
+                     MaxLength="10"
+                     PlaceholderText="e.g. 3.1.2"
+                     Text="{Binding EditTopicSpecReference, Mode=TwoWay}">
+              <TextBox.KeyBindings>
+                <KeyBinding Gesture="Enter" Command="{Binding SaveEditTopicCommand}" />
+              </TextBox.KeyBindings>
+            </TextBox>
+          </StackPanel>
+
+          <!-- Error message if validation or duplicate fails -->
+          <TextBlock Text="{Binding EditTopicErrorMessage}"
+                     Foreground="#F87171"
+                     FontSize="11"
+                     TextWrapping="Wrap"
+                     IsVisible="{Binding EditTopicErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+
+          <Grid ColumnDefinitions="*,*" Margin="0,6,0,0">
+            <Button Grid.Column="0"
+                    Content="Cancel"
+                    Command="{Binding CancelEditTopicCommand}"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    Height="32"
+                    Padding="12,4"
+                    Margin="0,0,4,0" />
+            <Button Grid.Column="1"
+                    Content="Save"
+                    Command="{Binding SaveEditTopicCommand}"
+                    Background="#38BDF8"
+                    Foreground="#0F172A"
+                    FontWeight="SemiBold"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    Height="32"
+                    Padding="12,4"
+                    Margin="4,0,0,0" />
+          </Grid>
+        </StackPanel>
+      </Border>
+    </Grid>
+
+    <!-- Modal Delete Confirmation Overlay -->
+    <Grid Grid.Column="0" 
+          Grid.ColumnSpan="2"
+          Background="#99000000"
+          IsVisible="{Binding IsConfirmDeleteOpen}"
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch">
+      <Border Background="#0F172A"
+              BorderBrush="#334155"
+              BorderThickness="1"
+              CornerRadius="10"
+              Padding="20"
+              Width="360"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              BoxShadow="0 10 25 0 #80000000">
+        <StackPanel Spacing="14">
+          <TextBlock Text="{Binding ConfirmDeleteTitle}" 
+                     FontWeight="SemiBold" 
+                     FontSize="15" 
+                     Foreground="{DynamicResource TextPrimaryBrush}" />
+
+          <TextBlock Text="{Binding ConfirmDeleteMessage}" 
+                     FontSize="13" 
+                     TextWrapping="Wrap"
+                     Foreground="{DynamicResource TextMutedBrush}" />
+
+          <Grid ColumnDefinitions="*,*" Margin="0,6,0,0">
+            <Button Grid.Column="0"
+                    Content="Cancel"
+                    Command="{Binding CancelDeleteCommand}"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Height="32"
+                    Padding="12,4"
+                    Margin="0,0,4,0" />
+            <Button Grid.Column="1"
+                    Content="Delete"
+                    Command="{Binding ConfirmDeleteCommand}"
+                    Background="#EF4444"
+                    Foreground="#FFFFFF"
+                    FontWeight="SemiBold"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Height="32"
+                    Padding="12,4"
+                    Margin="4,0,0,0" />
+          </Grid>
+        </StackPanel>
+      </Border>
+    </Grid>
+    
+  </Grid>
 </UserControl>

@@ -14,17 +14,23 @@ public partial class MainWindowViewModel : ViewModelBase
         Router.NavigateTo<HomeViewModel>();
     }
 
-    [ObservableProperty] private bool _isHomeSelected = true;
+    [ObservableProperty] 
+    private bool _isHomeSelected = true;
 
-    [ObservableProperty] private bool _isSubjectsSelected;
+    [ObservableProperty] 
+    private bool _isSubjectsSelected;
 
-    [ObservableProperty] private bool _isReviewSelected;
+    [ObservableProperty] 
+    private bool _isReviewSelected;
 
-    [ObservableProperty] private bool _isProductivitySelected;
+    [ObservableProperty] 
+    private bool _isProductivitySelected;
 
-    [ObservableProperty] private bool _isAssistantSelected;
+    [ObservableProperty] 
+    private bool _isAssistantSelected;
 
-    [ObservableProperty] private bool _isHelpSelected;
+    [ObservableProperty] 
+    private bool _isHelpSelected;
     
     [ObservableProperty]
     private bool _isSidebarExpanded = true;
@@ -42,53 +48,53 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void NavigateToHome()
     {
-        SelectNavItem("Home");
+        SelectNavPage("Home");
         Router.NavigateTo<HomeViewModel>();
     }
 
     [RelayCommand]
     private void NavigateToSubjects()
     {
-        SelectNavItem("Subjects");
+        SelectNavPage("Subjects");
         Router.NavigateTo<SubjectsViewModel>();
     }
 
     [RelayCommand]
     private void NavigateToReview()
     {
-        SelectNavItem("Review");
+        SelectNavPage("Review");
         Router.NavigateTo<ReviewViewModel>();
     }
 
     [RelayCommand]
     private void NavigateToProductivity()
     {
-        SelectNavItem("Productivity");
+        SelectNavPage("Productivity");
         Router.NavigateTo<ProductivityViewModel>();
     }
 
     [RelayCommand]
     private void NavigateToAssistant()
     {
-        SelectNavItem("Assistant");
+        SelectNavPage("Assistant");
         Router.NavigateTo<AssistantViewModel>();
     }
 
     [RelayCommand]
     private void NavigateToHelp()
     {
-        SelectNavItem("Help");
+        SelectNavPage("Help");
         Router.NavigateTo<HelpViewModel>();
     }
 
     [RelayCommand]
-    private void SelectNavItem(string item)
+    private void SelectNavPage(string page)
     {
-        IsHomeSelected = item == "Home";
-        IsSubjectsSelected  = item == "Subjects";
-        IsReviewSelected  = item == "Review";
-        IsProductivitySelected  = item == "Productivity";
-        IsAssistantSelected  = item == "Assistant";
-        IsHelpSelected  = item == "Help";
+        IsHomeSelected = page == "Home";
+        IsSubjectsSelected  = page == "Subjects";
+        IsReviewSelected  = page == "Review";
+        IsProductivitySelected  = page == "Productivity";
+        IsAssistantSelected  = page == "Assistant";
+        IsHelpSelected  = page == "Help";
     }
 }

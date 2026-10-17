@@ -31,7 +31,7 @@ namespace Iterate.Migrations
 
                     b.HasKey("SubjectId");
 
-                    b.ToTable("Subjects");
+                    b.ToTable("Subjects", (string)null);
                 });
 
             modelBuilder.Entity("Iterate.Models.Topic", b =>
@@ -78,7 +78,7 @@ namespace Iterate.Migrations
                     b.HasIndex("SubjectId", "ParentTopicId", "Name")
                         .IsUnique();
 
-                    b.ToTable("Topics");
+                    b.ToTable("Topics", (string)null);
                 });
 
             modelBuilder.Entity("Iterate.Models.Topic", b =>

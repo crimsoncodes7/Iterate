@@ -11,11 +11,11 @@ public partial class Router : ObservableObject
     private readonly IServiceProvider _provider;
     
     [ObservableProperty] 
-    private ViewModelBase currentViewModel;
+    private ViewModelBase _currentViewModel = null!;
     
     public Router(IServiceProvider provider)
     {
-        this._provider = provider;
+        _provider = provider;
     }
     
     public void NavigateTo<T>() where T : ViewModelBase
